@@ -23,9 +23,20 @@
 3. `/reservations` (later...)
 4. `/products` (later...)
 
+# Technology stack
+
+1. React Query for global remote state management
+2. React navigation
+3. Styled Components for styling the application
+4. React Hot Toast for notifications
+5. React Hook Form for form data handling
+6. Context API for global UI state management
+
 # State structure
 
 ## Events
+
+Events will be a global remote state that will be available to all features throughout the whole application.
 
 ```json
 [
