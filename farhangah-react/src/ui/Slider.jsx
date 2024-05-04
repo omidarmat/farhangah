@@ -147,8 +147,10 @@ function Slider() {
             <p>درحال بارگزاری</p>
           ) : (
             <p>
-              این رویداد از تاریخ فلان تا فلان از ساعت فلان تا فلان برگزار
-              می‌شود
+              این رویداد از تاریخ {currentEvents[sliderIndex - 1].startDate} تا{" "}
+              {currentEvents[sliderIndex - 1].endDate} از ساعت{" "}
+              {currentEvents[sliderIndex - 1].startTime} تا{" "}
+              {currentEvents[sliderIndex - 1].endTime} برگزار می‌شود
             </p>
           )}
         </Description>

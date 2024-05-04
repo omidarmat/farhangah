@@ -97,7 +97,10 @@ function HotEvents() {
             <ComingSoonEventPoster src={event.poster} />
             <ComingSoonEventDescription>
               <StatusTag type="soon">به زودی</StatusTag>
-              <p>این همایش از تاریخ فلان تا فلان برگزار می‌شود</p>
+              <p>
+                این همایش از تاریخ {event.startDate} تا {event.endDate} برگزار
+                می‌شود
+              </p>
             </ComingSoonEventDescription>
           </ComingSoonEventCard>
         ))
