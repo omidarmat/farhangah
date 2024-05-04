@@ -25,12 +25,14 @@
 
 # Technology stack
 
-1. React Query for global remote state management
-2. React navigation
-3. Styled Components for styling the application
-4. React Hot Toast for notifications
+1. React Query: global remote state management
+2. Context API for global UI state management
+3. Styled Components for styling the application (done)
+4. React navigation (done)
 5. React Hook Form for form data handling
-6. Context API for global UI state management
+6. React Hot Toast for notifications
+
+As of `4 may 2024`
 
 # State structure
 
