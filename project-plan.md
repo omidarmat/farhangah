@@ -25,7 +25,7 @@
 
 # Technology stack
 
-1. React Query: global remote state management
+1. React Query: global remote state management (in progress)
 2. Context API for global UI state management
 3. Styled Components for styling the application (done)
 4. React navigation (done)
