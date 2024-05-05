@@ -6,10 +6,14 @@ import Subscription from "./pages/Subscription";
 import Products from "./pages/Products";
 import Tutorials from "./pages/Tutorials";
 import PageNotFound from "./pages/PageNotFound";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./ui/ProtectedRoute";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import styled from "styled-components";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +23,15 @@ const queryClient = new QueryClient({
   },
 });
 
+const Main = styled.main`
+  margin: 0 auto;
+  max-width: 170rem;
+`;
+
+const AppLayout = styled.div`
+  margin: 0 5vw;
+`;
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -26,14 +39,27 @@ function App() {
       <GlobalStyle />
       <BrowserRouter>
         <Header />
-        <Routes>
-          <Route path="/" element={<Homepage />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/tutorials" element={<Tutorials />} />
-          <Route path="/subscription" element={<Subscription />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
+        <Main>
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/tutorials" element={<Tutorials />} />
+              <Route path="/subscription" element={<Subscription />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              ></Route>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </AppLayout>
+        </Main>
       </BrowserRouter>
     </QueryClientProvider>
   );

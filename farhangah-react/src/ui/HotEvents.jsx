@@ -11,7 +11,6 @@ const ComingSoonEventsContainer = styled.div`
 `;
 
 const ComingSoonEventCard = styled.div`
-  height: 50rem;
   border-radius: 2rem;
   background-color: aqua;
   overflow: hidden;
@@ -55,7 +54,7 @@ function HotEvents() {
       </ComingSoonEventsContainer>
     );
 
-  console.log(events);
+  // console.log(events);
 
   let sortedEvents = [];
 
@@ -85,7 +84,7 @@ function HotEvents() {
     }
   }
 
-  console.log("SORTED:", sortedEvents);
+  // console.log("SORTED:", sortedEvents);
 
   return (
     <ComingSoonEventsContainer>

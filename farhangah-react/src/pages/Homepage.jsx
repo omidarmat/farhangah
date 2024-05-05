@@ -1,15 +1,10 @@
-import styled from "styled-components";
 import Slider from "../ui/Slider";
 import HotEvents from "../ui/HotEvents";
 import Section from "../ui/Section";
 
-const HomePageContainer = styled.div`
-  margin: 4rem 5vw;
-`;
-
 function Homepage() {
   return (
-    <HomePageContainer>
+    <div>
       <Section>
         <Slider />
       </Section>
@@ -17,7 +12,7 @@ function Homepage() {
         <HotEvents />
       </Section>
       {/* <Calendar /> */}
-    </HomePageContainer>
+    </div>
   );
 }
 

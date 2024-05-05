@@ -5,7 +5,18 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 const SliderContainer = styled.div`
-  height: 50rem;
+  ${(props) =>
+    props.type === "noEvent" &&
+    css`
+      height: 8rem;
+    `}
+
+  ${(props) =>
+    props.type === "event" &&
+    css`
+      height: 50rem;
+    `}
+
   background-color: var(--color-brand-100);
   border-radius: 1.5rem;
   overflow: hidden;
@@ -114,12 +125,25 @@ function Slider() {
     });
   }
 
+  if (currentEvents.length === 0)
+    return (
+      <SliderContainer type="noEvent">
+        <p>در حال حاضر هیچ رویدادی در حال اجرا نیست</p>
+      </SliderContainer>
+    );
+
   return (
-    <SliderContainer>
+    <SliderContainer type="event">
       {isLoading ? (
         <p>در حال بارگزاری...</p>
       ) : (
-        <SliderImage src={currentEvents[sliderIndex - 1].photos[0].url} />
+        <SliderImage
+          src={
+            currentEvents[sliderIndex - 1].photos !== null
+              ? currentEvents[sliderIndex - 1].photos[0].url
+              : "https://www.thewall360.com/uploadImages/ExtImages/images1/def-638240706028967470.jpg"
+          }
+        />
       )}
       {currentEvents.length > 1 && (
         <>
