@@ -2,15 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import getEvents from "../services/apiEvents";
 import styled from "styled-components";
 import StatusTag from "./StatusTag";
+import calculateHotEvents from "../features/calculateHotEvents";
 
-const ComingSoonEventsContainer = styled.div`
+const Container = styled.div`
   display: flex;
   gap: 3rem;
   align-items: center;
   justify-content: center;
 `;
 
-const ComingSoonEventCard = styled.div`
+const EventCard = styled.div`
+  height: 50rem;
   border-radius: 2rem;
   background-color: aqua;
   overflow: hidden;
@@ -19,12 +21,12 @@ const ComingSoonEventCard = styled.div`
   position: relative;
 `;
 
-const ComingSoonEventPoster = styled.img`
+const EventPoster = styled.img`
   object-fit: cover;
   height: 100%;
 `;
 
-const ComingSoonEventDescription = styled.div`
+const EventDescription = styled.div`
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   position: absolute;
@@ -47,65 +49,46 @@ function HotEvents() {
     queryFn: getEvents,
   });
 
-  if (error)
-    return (
-      <ComingSoonEventsContainer>
-        <p>🔴 در بارگزاری اطلاعات رویدادها مشکلی پیش آمده است</p>
-      </ComingSoonEventsContainer>
-    );
-
-  // console.log(events);
-
   let sortedEvents = [];
 
-  if (!isLoading) {
-    sortedEvents = events
-      .filter((event) => {
-        const now = new Date().getTime();
-        const eventStart = new Date(`${event.startDate} ${event.startTime}`);
-        return now < eventStart;
-      })
-      .sort((eventA, eventB) => {
-        const now = new Date().getTime();
-        const eventAStart = new Date(
-          `${eventA.startDate} ${eventA.startTime}`
-        ).getTime();
-        const eventBStart = new Date(
-          `${eventB.startDate} ${eventB.startTime}`
-        ).getTime();
+  if (isLoading)
+    return (
+      <Container>
+        <p>در حال بارگزاری اطلاعات رویدادها</p>
+      </Container>
+    );
 
-        if (eventAStart - now < eventBStart - now) return -1;
-        if (eventAStart - now > eventBStart - now) return 1;
-        if (eventAStart - now === eventBStart - now) return 0;
-      });
+  if (error)
+    return (
+      <Container>
+        <p>{error.message}</p>
+      </Container>
+    );
+
+  if (!isLoading) {
+    sortedEvents = calculateHotEvents(events);
 
     if (sortedEvents.length > 3) {
       sortedEvents.splice(3);
     }
-  }
 
-  // console.log("SORTED:", sortedEvents);
-
-  return (
-    <ComingSoonEventsContainer>
-      {isLoading ? (
-        <p>در حال بارگزاری رویدادها...</p>
-      ) : (
-        sortedEvents.map((event) => (
-          <ComingSoonEventCard key={event.id}>
-            <ComingSoonEventPoster src={event.poster} />
-            <ComingSoonEventDescription>
+    return (
+      <Container>
+        {sortedEvents.map((event) => (
+          <EventCard key={event.id}>
+            <EventPoster src={event.poster} />
+            <EventDescription>
               <StatusTag type="soon">به زودی</StatusTag>
               <p>
                 این همایش از تاریخ {event.startDate} تا {event.endDate} برگزار
                 می‌شود
               </p>
-            </ComingSoonEventDescription>
-          </ComingSoonEventCard>
-        ))
-      )}
-    </ComingSoonEventsContainer>
-  );
+            </EventDescription>
+          </EventCard>
+        ))}
+      </Container>
+    );
+  }
 }
 
 export default HotEvents;

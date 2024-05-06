@@ -12,6 +12,8 @@ const GlobalStyle = createGlobalStyle`
   --color-brand-800: #3730a3;
   --color-brand-900: #231A6D;
 
+  --color-brand-2-600: #6AC1C2;
+
   /* Grey */
   --color-grey-0: #fff;
   --color-grey-50: #f9fafb;
@@ -71,7 +73,7 @@ html {
 body {
   font-family: "Rubik", sans-serif;
   color: var(--color-grey-700);
-  line-height: 1.3;
+  line-height: 1.5;
   font-size: 1.6rem;
   direction: rtl;
 }

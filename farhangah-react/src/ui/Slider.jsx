@@ -1,12 +1,19 @@
 import styled, { css } from "styled-components";
 import StatusTag from "./StatusTag";
 import getEvents from "../services/apiEvents";
+import calculateCurrentEvents from "../features/calculateCurrentEvents";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 const SliderContainer = styled.div`
   ${(props) =>
     props.type === "noEvent" &&
+    css`
+      height: 8rem;
+    `}
+
+  ${(props) =>
+    props.type === "error" &&
     css`
       height: 8rem;
     `}
@@ -29,7 +36,6 @@ const SliderContainer = styled.div`
 
 const SliderImage = styled.img`
   width: 100%;
-  height: 100%;
   object-fit: cover;
 `;
 
@@ -74,6 +80,7 @@ const Description = styled.div`
 
 function Slider() {
   const [sliderIndex, setSliderIndex] = useState(1);
+  let currentEvents = [];
 
   const {
     isLoading,
@@ -84,15 +91,21 @@ function Slider() {
     queryFn: getEvents,
   });
 
-  if (error) {
+  if (isLoading) {
     return (
-      <SliderContainer>
-        <p>🔴 در بارگزاری اطلاعات مشکلی پیش آمده است</p>
+      <SliderContainer type="event">
+        <p>در حال بارگزاری اطلاعات رویدادها</p>
       </SliderContainer>
     );
   }
 
-  let currentEvents = [];
+  if (error) {
+    return (
+      <SliderContainer type="error">
+        <p>{error.message}</p>
+      </SliderContainer>
+    );
+  }
 
   function handleSlideNext() {
     if (sliderIndex < currentEvents.length)
@@ -105,38 +118,17 @@ function Slider() {
   }
 
   if (!isLoading) {
-    // filter events that are currently being executed
-    currentEvents = events.filter((event) => {
-      const startDateTime = new Date(
-        `${event.startDate} ${event.startTime}`
-      ).getTime();
+    currentEvents = calculateCurrentEvents(events);
 
-      const endDateTime = new Date(
-        `${event.endDate} ${event.endTime}`
-      ).getTime();
+    if (currentEvents.length === 0)
+      return (
+        <SliderContainer type="noEvent">
+          <p>در حال حاضر هیچ رویدادی در حال اجرا نیست</p>
+        </SliderContainer>
+      );
 
-      const now = new Date().getTime();
-
-      if (now >= startDateTime && now <= endDateTime) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  }
-
-  if (currentEvents.length === 0)
     return (
-      <SliderContainer type="noEvent">
-        <p>در حال حاضر هیچ رویدادی در حال اجرا نیست</p>
-      </SliderContainer>
-    );
-
-  return (
-    <SliderContainer type="event">
-      {isLoading ? (
-        <p>در حال بارگزاری...</p>
-      ) : (
+      <SliderContainer type="event">
         <SliderImage
           src={
             currentEvents[sliderIndex - 1].photos !== null
@@ -144,43 +136,45 @@ function Slider() {
               : "https://www.thewall360.com/uploadImages/ExtImages/images1/def-638240706028967470.jpg"
           }
         />
-      )}
-      {currentEvents.length > 1 && (
-        <>
-          {sliderIndex !== currentEvents.length ? (
-            <SliderButton type="right" onClick={handleSlideNext}>
-              &rarr;
-            </SliderButton>
-          ) : null}
-          {sliderIndex !== 1 ? (
-            <SliderButton type="left" onClick={handleSlidePrev}>
-              &larr;
-            </SliderButton>
-          ) : null}
-        </>
-      )}
-      <SliderInfo>
-        <StatusTag type="current">در حال اجرا</StatusTag>
-        <Description>
-          {isLoading ? (
-            <h2>در حال بارگزاری...</h2>
-          ) : (
-            <h2>{currentEvents[sliderIndex - 1].title}</h2>
-          )}
-          {isLoading ? (
-            <p>درحال بارگزاری</p>
-          ) : (
-            <p>
-              این رویداد از تاریخ {currentEvents[sliderIndex - 1].startDate} تا{" "}
-              {currentEvents[sliderIndex - 1].endDate} از ساعت{" "}
-              {currentEvents[sliderIndex - 1].startTime} تا{" "}
-              {currentEvents[sliderIndex - 1].endTime} برگزار می‌شود
-            </p>
-          )}
-        </Description>
-      </SliderInfo>
-    </SliderContainer>
-  );
+
+        {currentEvents.length > 1 && (
+          <>
+            {sliderIndex !== currentEvents.length ? (
+              <SliderButton type="right" onClick={handleSlideNext}>
+                &rarr;
+              </SliderButton>
+            ) : null}
+            {sliderIndex !== 1 ? (
+              <SliderButton type="left" onClick={handleSlidePrev}>
+                &larr;
+              </SliderButton>
+            ) : null}
+          </>
+        )}
+
+        <SliderInfo>
+          <StatusTag type="current">در حال اجرا</StatusTag>
+          <Description>
+            {isLoading ? (
+              <h2>در حال بارگزاری...</h2>
+            ) : (
+              <h2>{currentEvents[sliderIndex - 1].title}</h2>
+            )}
+            {isLoading ? (
+              <p>درحال بارگزاری</p>
+            ) : (
+              <p>
+                این رویداد از تاریخ {currentEvents[sliderIndex - 1].startDate}{" "}
+                تا {currentEvents[sliderIndex - 1].endDate} از ساعت{" "}
+                {currentEvents[sliderIndex - 1].startTime} تا{" "}
+                {currentEvents[sliderIndex - 1].endTime} برگزار می‌شود
+              </p>
+            )}
+          </Description>
+        </SliderInfo>
+      </SliderContainer>
+    );
+  }
 }
 
 export default Slider;

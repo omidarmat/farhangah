@@ -5,7 +5,7 @@ export default async function getEvents() {
 
   if (error) {
     console.log(`💻 ${error}`);
-    throw new Error("🔴 Events could not be loaded.");
+    throw new Error("🔴 در بارگزاری اطلاعات رویدادها مشکلی پیش آمده است.");
   }
 
   return data;
